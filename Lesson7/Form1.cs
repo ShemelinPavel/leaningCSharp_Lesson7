@@ -14,22 +14,27 @@ namespace Lesson7
     {
         Udvoitel udvoitel=null;
 
+        public void NewGame()
+        {
+            udvoitel = new Udvoitel(28);
+            udvoitel.RaiseWinLose += WinLoseEvent;
+            UpdateInfo();
+        }
+
         public Form1()
         {
             InitializeComponent();
+            NewGame();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Are you sure?","Info",MessageBoxButtons.YesNo)==DialogResult.Yes)  this.Close();
-            
+            if (MessageBox.Show("Are you sure?","Leave this game",MessageBoxButtons.YesNo)==DialogResult.Yes)  this.Close();
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
-            udvoitel = new Udvoitel(28);
-            UpdateInfo();
+            NewGame();
         }
 
         private void UpdateInfo()
@@ -51,6 +56,51 @@ namespace Lesson7
         {
             udvoitel?.Multi();
             UpdateInfo();
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            udvoitel?.Reset();
+            UpdateInfo();
+        }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            udvoitel?.GetLastMoveFromHistory();
+            UpdateInfo();
+        }
+
+        private void WinLoseEvent(object sender, WinLoseEventArgs e)
+        {
+
+            UpdateInfo();
+
+            MessageBox.Show($"{e.Message}");
+
+            udvoitel?.Reset();
+            UpdateInfo();
+        }
+    }
+
+    public class WinLoseEventArgs : EventArgs
+    {
+        private string msg;
+        private bool result;
+
+        public WinLoseEventArgs(string textMessage, bool gameResult)
+        {
+            msg = textMessage;
+            result = gameResult;
+        }
+
+        public string Message
+        {
+            get { return this.msg; }
+        }
+
+        public bool GameResult
+        {
+            get { return this.result; }
         }
     }
 }
